@@ -11,11 +11,15 @@ router = APIRouter(prefix="/orders", tags=["orders"])
 
 @router.post("/", response_model=Order)
 def create_order(order: OrderCreate, session: Session = Depends(get_session)):
-    db_order = Order(**order.model_dump())
-    session.add(db_order)
-    session.commit()
-    session.refresh(db_order)
-    return db_order
+    try:
+        db_order = Order(**order.model_dump())
+        session.add(db_order)
+        session.commit()
+        session.refresh(db_order)
+        return db_order
+    except Exception:
+        session.rollback()
+        raise
 
 @router.get("/", response_model=list[Order])
 def list_orders(

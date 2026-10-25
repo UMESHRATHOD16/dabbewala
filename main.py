@@ -23,14 +23,14 @@ app = FastAPI(
 app.include_router(orders_router)
 app.include_router(stats_router)
 
-app.get("/")
+@app.get("/")
 def root():
     return {
         "message" : "Project Dabbewala is serving.",
         "description" : "This is a project to manage the delivery of food and other items in a city using a network of delivery personnel called Dabbewalas."
     }
 
-app.get("/health", tags=["health"])
+@app.get("/health", tags=["health"])
 def health_check():
     return {
         "status" : "healthy",

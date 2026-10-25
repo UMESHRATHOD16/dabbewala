@@ -1,4 +1,4 @@
-from sqlmodel import Model, Field, SQLModel
+from sqlmodel import Field, SQLModel
 from typing import Optional
 from datetime import datetime
 from fastapi import FastAPI
@@ -12,14 +12,18 @@ class OrderStatus(str, Enum):
     DELIVERED = "delivered"
 
 # database model for the Order table
+from datetime import datetime, timezone
+from typing import Optional
+from sqlmodel import SQLModel, Field
+
 class Order(SQLModel, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
     customer_name: str
     delivery_address: str
     items: str
     status: OrderStatus = Field(default=OrderStatus.PREPARING)
-    created_at: datetime = Field(default_factory=datetime.now)
-    updated_at: datetime = Field(default_factory=datetime.now)
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+    updated_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
 
 # schema for creating a new order
 class OrderCreate(SQLModel):
