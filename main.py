@@ -6,6 +6,7 @@ from routes.orders import router as orders_router
 from routes.stats import router as stats_router
 
 
+
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     create_tables()

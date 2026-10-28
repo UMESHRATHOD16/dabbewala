@@ -39,3 +39,17 @@ def list_orders(
     query = query.offset(skip).limit(limit)
 
     return session.exec(query).all()
+
+@router.patch("/statusUpdate/{order_id}", response_model=Order)
+def update_order_status(order_id: int, order_update: OrderUpdate, session: Session = Depends(get_session)):
+    db_order = session.get(Order, order_id)
+    if not db_order:
+        raise HTTPException(status_code=404, detail="Order not found")
+    
+    for key, value in order_update.model_dump(exclude_unset=True).items():
+        setattr(db_order, key, value)
+    
+    session.add(db_order)
+    session.commit()
+    session.refresh(db_order)
+    return db_order
